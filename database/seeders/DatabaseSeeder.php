@@ -15,12 +15,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // \App\Models\User::factory(10)->create();
 
-        \App\Models\User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        if (env('APP_ENV') === 'local') {
+            \App\Models\User::factory()->create([
+                'name' => 'Test User',
+                'email' => 'test@example.com',
+            ]);
+        }
 
         Colour::create([
             'abbr' => 'W',
@@ -75,10 +76,9 @@ class DatabaseSeeder extends Seeder
             'name' => 'Land',
         ]);
 
-
+        $this->call(CardsTableSeeder::class);
 
         $this->call(CardColourTableSeeder::class);
         $this->call(CardTypesTableSeeder::class);
-        $this->call(CardsTableSeeder::class);
     }
 }
