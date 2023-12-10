@@ -69,7 +69,8 @@ class User extends Authenticatable implements FilamentUser
     {
         if ($this->whereHas('cardWants', function ($q) use ($card) {
             $q->where('card_id', $card->id)
-                ->where('state', WantStatus::NotWant);
+                ->where('state', WantStatus::NotWant)
+                ->where('user_id', $this->id);
         })->exists()) {
             $this->cards()->detach($card);
         } else {
@@ -90,7 +91,8 @@ class User extends Authenticatable implements FilamentUser
     {
         if ($this->whereHas('cardWants', function ($q) use ($card) {
             $q->where('card_id', $card->id)
-                ->where('state', WantStatus::Want);
+                ->where('state', WantStatus::Want)
+                ->where('user_id', $this->id);
         })->exists()) {
             $this->cards()->detach($card);
         } else {
@@ -111,7 +113,8 @@ class User extends Authenticatable implements FilamentUser
     {
         if ($this->whereHas('cardWants', function ($q) use ($card) {
             $q->where('card_id', $card->id)
-                ->where('state', WantStatus::ReallyWant);
+                ->where('state', WantStatus::ReallyWant)
+                ->where('user_id', $this->id);
         })->exists()) {
             $this->cards()->detach($card);
         } else {
@@ -132,7 +135,8 @@ class User extends Authenticatable implements FilamentUser
     {
         if ($this->whereHas('cardWants', function ($q) use ($card) {
             $q->where('card_id', $card->id)
-                ->where('state', WantStatus::ReallyReallyWant);
+                ->where('state', WantStatus::ReallyReallyWant)
+                ->where('user_id', $this->id);
         })->exists()) {
             $this->cards()->detach($card);
         } else {
