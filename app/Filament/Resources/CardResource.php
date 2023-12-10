@@ -61,18 +61,19 @@ class CardResource extends Resource
                         ->height('auto')
                         ->extraImgAttributes(['class' => 'w-full'])
                         ->alignCenter()
-                    ->searchable(['name', 'oracle_text', 'type_line']),
+                        ->searchable(['name', 'oracle_text', 'type_line']),
                     Tables\Columns\ImageColumn::make('reverse_image')
                         ->height('auto')
                         ->extraImgAttributes(['class' => 'w-full'])
                         ->alignCenter(),
 
                     TextColumn::make('quantity')
-                        ->formatStateUsing(fn(int $state) => $state > 1 ? "Count: " . $state : ''),
+                        ->formatStateUsing(fn(int $state) => $state > 1 ? "Count: " . $state : 'Count: 1')
+                        ->alignCenter(),
                     Tables\Columns\TextColumn::make('foil')
-                        ->formatStateUsing(fn(bool $state) => $state ? 'Foil' : '')
+                        ->formatStateUsing(fn(bool $state) => $state ? 'Foil' : 'Not Foil')
                         ->badge()
-                        ->color('primary')
+                        ->color(fn(bool $state) => $state ? 'primary' : 'grey')
                         ->alignCenter(),
                 ]),
             ])

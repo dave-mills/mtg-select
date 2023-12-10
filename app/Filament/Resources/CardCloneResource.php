@@ -11,6 +11,7 @@ use Filament\Navigation\NavigationItem;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\Layout\Stack;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -63,10 +64,13 @@ class CardCloneResource extends Resource
                         ->height('auto')
                         ->extraImgAttributes(['class' => 'w-full'])
                         ->alignCenter(),
+                    TextColumn::make('quantity')
+                        ->formatStateUsing(fn(int $state) => $state > 1 ? "Count: " . $state : 'Count: 1')
+                    ->alignCenter(),
                     Tables\Columns\TextColumn::make('foil')
-                        ->formatStateUsing(fn(bool $state) => $state ? 'Foil' : '')
+                        ->formatStateUsing(fn(bool $state) => $state ? 'Foil' : 'Not Foil')
                         ->badge()
-                        ->color('primary')
+                        ->color(fn(bool $state) => $state ? 'primary' : 'grey')
                         ->alignCenter(),
                 ]),
             ])
