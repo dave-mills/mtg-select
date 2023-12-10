@@ -112,6 +112,9 @@ class CardCloneResource extends Resource
                     $query->where('user_id', Auth::user()->id);
                 });
             })
+            ->contentGrid([
+                'md' => 1,
+            ])
             ->paginated([1]);
     }
 

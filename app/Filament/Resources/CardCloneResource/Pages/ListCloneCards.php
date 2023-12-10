@@ -27,9 +27,6 @@ class ListCloneCards extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
-                        Actions\ImportAction::make()
-            ->importer(CardImporter::class),
         ];
     }
 }

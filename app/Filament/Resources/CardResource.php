@@ -60,7 +60,8 @@ class CardResource extends Resource
                     Tables\Columns\ImageColumn::make('image')
                         ->height('auto')
                         ->extraImgAttributes(['class' => 'w-full'])
-                        ->alignCenter(),
+                        ->alignCenter()
+                    ->searchable(['name', 'oracle_text', 'type_line']),
                     Tables\Columns\ImageColumn::make('reverse_image')
                         ->height('auto')
                         ->extraImgAttributes(['class' => 'w-full'])
@@ -73,8 +74,6 @@ class CardResource extends Resource
                         ->badge()
                         ->color('primary')
                         ->alignCenter(),
-                    TextColumn::make('name')
-                    ->searchable(),
                 ]),
             ])
             ->filtersTriggerAction(fn($action) => $action->button()->label('Filters'))
