@@ -77,5 +77,8 @@ class DatabaseSeeder extends Seeder
 
 
 
+        $this->call(CardColourTableSeeder::class);
+        $this->call(CardTypesTableSeeder::class);
+        $this->call(CardsTableSeeder::class);
     }
 }

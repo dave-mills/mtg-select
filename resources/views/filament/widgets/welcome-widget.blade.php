@@ -20,6 +20,15 @@
             <h3>1 by 1 Review</h3>
             <p>If you want to look at 1 card at a time and make some quick judgements as a first pass, you can use the "Cards 1by1 review" page. This will take you through every card you have not already reviewed, and present the 4 options to you. When you click an option, it will move to the next card. You can filter the list (e.g., if you want to go through only red creatures). </p>
             <p>You can always change your review on the main Cards page, so don't be worried that your quick clicking is final!</p>
+
+            <h3>WIP</h3>
+            <p>This is a work in progress! Things I would like to add, but probably won't unless someone asks me to:
+            <ul>
+                <li>Sort / filter by Card edition</li>
+                <li>Sort / filter by other card properties (Subtype, Power / Toughness, Mana Cost, etc)</li>
+                <li>Better formatting of images for cards with 2 faces (currently, both images are shown at full size, which breaks the nice grid on the Cards page)</li>
+            </ul>
+            </p>
         </div>
     </x-filament::section>
 </x-filament-widgets::widget>
