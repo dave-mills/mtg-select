@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Enums\WantStatus;
 use Filament\Models\Contracts\FilamentUser;
+use Filament\Notifications\Notification;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -64,17 +65,45 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasMany(CardWant::class);
     }
 
+    public function notWant(Card $card)
+    {
+        if ($this->whereHas('cardWants', function ($q) use ($card) {
+            $q->where('card_id', $card->id)
+                ->where('state', WantStatus::NotWant);
+        })->exists()) {
+            $this->cards()->detach($card);
+        } else {
+            $this->cards()->syncWithoutDetaching([
+                $card->id => ['state' => WantStatus::NotWant],
+            ]);
+
+            // send notification
+            Notification::make('Choice Saved')
+                ->body('You have marked ' . $card->name . ' with the status: ' . WantStatus::NotWant->value)
+                ->duration(10000)
+                ->success()
+                ->send();
+        }
+    }
+
     public function want(Card $card)
     {
         if ($this->whereHas('cardWants', function ($q) use ($card) {
             $q->where('card_id', $card->id)
-            ->where('state', WantStatus::Want);
+                ->where('state', WantStatus::Want);
         })->exists()) {
             $this->cards()->detach($card);
         } else {
             $this->cards()->syncWithoutDetaching([
                 $card->id => ['state' => WantStatus::Want],
             ]);
+
+            // send notification
+            Notification::make('Choice Saved')
+                ->body('You have marked ' . $card->name . ' with the status: ' . WantStatus::Want->value)
+                ->duration(10000)
+                ->success()
+                ->send();
         }
     }
 
@@ -82,13 +111,20 @@ class User extends Authenticatable implements FilamentUser
     {
         if ($this->whereHas('cardWants', function ($q) use ($card) {
             $q->where('card_id', $card->id)
-            ->where('state', WantStatus::ReallyWant);
+                ->where('state', WantStatus::ReallyWant);
         })->exists()) {
             $this->cards()->detach($card);
         } else {
             $this->cards()->syncWithoutDetaching([
                 $card->id => ['state' => WantStatus::ReallyWant],
             ]);
+
+            // send notification
+            Notification::make('Choice Saved')
+                ->body('You have marked ' . $card->name . ' with the status: ' . WantStatus::ReallyWant->value)
+                ->duration(10000)
+                ->success()
+                ->send();
         }
     }
 
@@ -96,13 +132,20 @@ class User extends Authenticatable implements FilamentUser
     {
         if ($this->whereHas('cardWants', function ($q) use ($card) {
             $q->where('card_id', $card->id)
-            ->where('state', WantStatus::ReallyReallyWant);
+                ->where('state', WantStatus::ReallyReallyWant);
         })->exists()) {
             $this->cards()->detach($card);
         } else {
             $this->cards()->syncWithoutDetaching([
                 $card->id => ['state' => WantStatus::ReallyReallyWant],
             ]);
+
+            // send notification
+            Notification::make('Choice Saved')
+                ->body('You have marked ' . $card->name . ' with the status: ' . WantStatus::ReallyReallyWant->value)
+                ->duration(10000)
+                ->success()
+                ->send();
         }
     }
 }

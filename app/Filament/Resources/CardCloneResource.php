@@ -2,28 +2,30 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\CardResource\Pages;
-use App\Filament\Resources\CardResource\RelationManagers;
+use App\Enums\WantStatus;
+use App\Filament\Resources\CardCloneResource\Pages;
 use App\Models\Card;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Navigation\NavigationItem;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\Layout\Stack;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
-use Nette\Utils\ImageColor;
-use App\Enums\WantStatus;
 
-class CardResource extends Resource
+class CardCloneResource extends Resource
 {
     protected static ?string $model = Card::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+
+    public static function getNavigationLabel(): string
+    {
+        return 'Cards - 1by1 review';
+    }
 
     public static function form(Form $form): Form
     {
@@ -61,46 +63,22 @@ class CardResource extends Resource
                         ->height('auto')
                         ->extraImgAttributes(['class' => 'w-full'])
                         ->alignCenter(),
-                    Tables\Columns\ImageColumn::make('reverse_image')
-                        ->height('auto')
-                        ->extraImgAttributes(['class' => 'w-full'])
-                        ->alignCenter(),
-
-                    TextColumn::make('quantity')
-                        ->formatStateUsing(fn(int $state) => $state > 1 ? "Count: " . $state : ''),
                     Tables\Columns\TextColumn::make('foil')
                         ->formatStateUsing(fn(bool $state) => $state ? 'Foil' : '')
                         ->badge()
                         ->color('primary')
                         ->alignCenter(),
-                    TextColumn::make('name')
-                    ->searchable(),
                 ]),
             ])
-            ->filtersTriggerAction(fn($action) => $action->button()->label('Filters'))
             ->filters([
                 Tables\Filters\SelectFilter::make('colours')
                     ->relationship('colours', 'name')
-                    ->preload()
                     ->multiple(),
                 Tables\Filters\SelectFilter::make('cardTypes')
                     ->relationship('cardTypes', 'name')
-                    ->preload()
                     ->multiple(),
-                Tables\Filters\TernaryFilter::make('foil')
-                    ->placeholder('Any')
-                    ->trueLabel('Foil')
-                    ->falseLabel('Non-Foil'),
-                Tables\Filters\TernaryFilter::make('quantity')
-                    ->queries(
-                        true: fn(Builder $query) => $query->where('quantity', '>', 1),
-                        false: fn(Builder $query) => $query->where('quantity', 1),
-                    )
-                    ->placeholder('Any')
-                    ->trueLabel('More than 1')
-                    ->falseLabel('Only 1')
-
-            ], layout: FiltersLayout::AboveContentCollapsible)
+                Tables\Filters\TernaryFilter::make('foil'),
+            ])
             ->actions([
 
                 Tables\Actions\Action::make('notWant')
@@ -121,24 +99,20 @@ class CardResource extends Resource
                     ->button()
                     ->outlined(fn(Card $record) => $record->getStatusFor(Auth::user()) !== WantStatus::ReallyWant)
                     ->color('warning')
-                    ->action(fn(Card $record) => Auth::user()->reallyWant($record)),
+                    ->action(fn(Card $record) => Auth::user()?->reallyWant($record)),
                 Tables\Actions\Action::make('reallyReallyWant')
                     ->label(fn() => WantStatus::ReallyReallyWant->value)
                     ->button()
                     ->outlined(fn(Card $record) => $record->getStatusFor(Auth::user()) !== WantStatus::ReallyReallyWant)
                     ->color('danger')
-                    ->action(fn(Card $record) => Auth::user()->reallyReallyWant($record)),
+                    ->action(fn(Card $record) => Auth::user()?->reallyReallyWant($record)),
             ])
-            ->contentGrid(function (Table $table) {
-                return [
-                    'md' => 2,
-                    'lg' => 3,
-                    '2xl' => 4,
-                ];
+            ->modifyQueryUsing(function (Builder $query) {
+                $query->whereDoesntHave('cardWants', function (Builder $query) {
+                    $query->where('user_id', Auth::user()->id);
+                });
             })
-            ->paginated([
-                10, 25, 50, 100
-            ]);
+            ->paginated([1]);
     }
 
     public static function getRelations(): array
@@ -151,9 +125,7 @@ class CardResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListCards::route('/'),
-            'create' => Pages\CreateCard::route('/create'),
-            'edit' => Pages\EditCard::route('/{record}/edit'),
+            'index' => Pages\ListCloneCards::route('/'),
         ];
     }
 }

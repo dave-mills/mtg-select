@@ -12,10 +12,26 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Card extends Model
 {
 
+    protected $casts = [
+        'scryfall_data' => 'array',
+        'foil' => 'boolean',
+    ];
+
     public function set(): BelongsTo
     {
         return $this->belongsTo(Set::class, 'code', 'set_code');
     }
+
+    public function colours(): BelongsToMany
+    {
+        return $this->belongsToMany(Colour::class);
+    }
+
+    public function cardTypes(): BelongsToMany
+    {
+        return $this->belongsToMany(CardType::class);
+    }
+
 
     public function users(): BelongsToMany
     {

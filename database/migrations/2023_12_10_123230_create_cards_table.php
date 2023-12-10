@@ -24,6 +24,7 @@ return new class extends Migration
             $table->text('type_line')->nullable();
             $table->string('set_code')->nullable();
             $table->text('image')->nullable();
+            $table->text('reverse_image')->nullable();
             $table->timestamps();
         });
     }

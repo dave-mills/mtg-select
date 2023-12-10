@@ -38,11 +38,21 @@ class PullCardData extends Command
                 ->throw()
                 ->json();
 
+                // check for multiple faces
+                if (!isset($return['image_uris'])) {
+                    $image = $return['card_faces'][0]['image_uris']['normal'];
+                    $reverseImage = $return['card_faces'][1]['image_uris']['normal'];
+                } else {
+                    $image = $return['image_uris']['normal'];
+                    $reverseImage = null;
+                }
+
                 $card->update([
-                    'scryfall_data' => json_encode($return),
+                    'scryfall_data' => $return,
                     'oracle_text' => $return['oracle_text'] ?? null,
                     'type_line' => $return['type_line'] ?? null,
-                    'image' => $return['image_uris']['normal'] ?? null,
+                    'image' => $image,
+                    'reverse_image' => $reverseImage,
                 ]);
 
                 $this->info('Updated ' . $card->name);
