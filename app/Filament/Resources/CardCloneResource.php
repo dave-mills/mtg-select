@@ -61,9 +61,10 @@ class CardCloneResource extends Resource
             ->columns([
                 Stack::make([
                     Tables\Columns\ImageColumn::make('image')
-                        ->height('auto')
+                        ->height('75vh')
                         ->extraImgAttributes(['class' => 'w-full'])
-                        ->alignCenter(),
+                        ->alignCenter()
+                    ->searchable(['name', 'oracle_text', 'type_line']),
                     TextColumn::make('quantity')
                         ->formatStateUsing(fn(int $state) => $state > 1 ? "Count: " . $state : 'Count: 1')
                     ->alignCenter(),
