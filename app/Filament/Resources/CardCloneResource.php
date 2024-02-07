@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Enums\WantStatus;
 use App\Filament\Resources\CardCloneResource\Pages;
+use App\Filament\Tables\Columns\ImageColumnWithoutHeightLimit;
 use App\Models\Card;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -60,8 +61,7 @@ class CardCloneResource extends Resource
         return $table
             ->columns([
                 Stack::make([
-                    Tables\Columns\ImageColumn::make('image')
-                        ->height('75vh')
+                    ImageColumnWithoutHeightLimit::make('image')
                         ->extraImgAttributes(['class' => 'w-full'])
                         ->alignCenter()
                     ->searchable(['name', 'oracle_text', 'type_line']),
