@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\WantStatus;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -51,5 +52,72 @@ class Card extends Model
             ->first()
             ?->state ?? 'none');
     }
+
+    public function nopes(): Attribute
+    {
+        return new Attribute(
+            get: function () {
+                return $this->cardWants()
+                    ->where('state', WantStatus::NotWant->value)
+                    ->count();
+            }
+        );
+    }
+
+    // Results
+
+    public function cardWantsNotWant(): Attribute
+    {
+        return new Attribute(
+            get: function() {
+                return $this->cardWants()
+                    ->where('state', WantStatus::NotWant->value)
+                    ->get()
+                    ->pluck('user.name')
+                    ->join(', ');
+            }
+        );
+    }
+
+    public function cardWantsWant(): Attribute
+    {
+        return new Attribute(
+            get: function() {
+                return $this->cardWants()
+                    ->where('state', WantStatus::Want->value)
+                    ->get()
+                    ->pluck('user.name')
+                    ->join(', ');
+            }
+        );
+    }
+
+    public function cardWantsReallyWant(): Attribute
+    {
+        return new Attribute(
+            get: function() {
+                return $this->cardWants()
+                    ->where('state', WantStatus::ReallyWant->value)
+                    ->get()
+                    ->pluck('user.name')
+                    ->join(', ');
+            }
+        );
+    }
+
+    public function cardWantsReallyReallyWant(): Attribute
+    {
+        return new Attribute(
+            get: function() {
+                return $this->cardWants()
+                    ->where('state', WantStatus::ReallyReallyWant->value)
+                    ->get()
+                    ->pluck('user.name')
+                    ->join(', ');
+            }
+        );
+    }
+
+
 
 }

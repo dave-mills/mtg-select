@@ -75,7 +75,7 @@ class User extends Authenticatable implements FilamentUser
             $this->cards()->detach($card);
         } else {
             $this->cards()->syncWithoutDetaching([
-                $card->id => ['state' => WantStatus::NotWant],
+                $card->id => ['state' => WantStatus::NotWant, 'not_want' => 1, 'want' => 0, 'really_want' => 0, 'really_really_want' => 0],
             ]);
 
             // send notification
@@ -97,7 +97,7 @@ class User extends Authenticatable implements FilamentUser
             $this->cards()->detach($card);
         } else {
             $this->cards()->syncWithoutDetaching([
-                $card->id => ['state' => WantStatus::Want],
+                $card->id => ['state' => WantStatus::Want, 'want' => 1, 'not_want' => 0, 'really_want' => 0, 'really_really_want' => 0],
             ]);
 
             // send notification
@@ -119,7 +119,7 @@ class User extends Authenticatable implements FilamentUser
             $this->cards()->detach($card);
         } else {
             $this->cards()->syncWithoutDetaching([
-                $card->id => ['state' => WantStatus::ReallyWant],
+                $card->id => ['state' => WantStatus::ReallyWant, 'really_want' => 1, 'not_want' => 0, 'want' => 0, 'really_really_want' => 0],
             ]);
 
             // send notification
@@ -141,7 +141,7 @@ class User extends Authenticatable implements FilamentUser
             $this->cards()->detach($card);
         } else {
             $this->cards()->syncWithoutDetaching([
-                $card->id => ['state' => WantStatus::ReallyReallyWant],
+                $card->id => ['state' => WantStatus::ReallyReallyWant, 'really_really_want' => 1, 'not_want' => 0, 'want' => 0, 'really_want' => 0],
             ]);
 
             // send notification
