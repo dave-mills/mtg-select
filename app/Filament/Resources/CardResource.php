@@ -80,7 +80,7 @@ class CardResource extends Resource
             ->filtersTriggerAction(fn($action) => $action->button()->label('Filters'))
             ->filters([
                 Tables\Filters\SelectFilter::make('set')
-                    ->relationship('set', 'name')
+                    ->relationship('set', 'name', fn(Builder $query) => $query->present())
                     ->preload(),
                 Tables\Filters\SelectFilter::make('colours')
                     ->relationship('colours', 'name')
