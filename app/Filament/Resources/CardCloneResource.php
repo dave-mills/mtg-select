@@ -64,10 +64,10 @@ class CardCloneResource extends Resource
                     ImageColumnWithoutHeightLimit::make('image')
                         ->extraImgAttributes(['class' => 'w-full'])
                         ->alignCenter()
-                    ->searchable(['name', 'oracle_text', 'type_line']),
+                        ->searchable(['name', 'oracle_text', 'type_line']),
                     TextColumn::make('quantity')
                         ->formatStateUsing(fn(int $state) => $state > 1 ? "Count: " . $state : 'Count: 1')
-                    ->alignCenter(),
+                        ->alignCenter(),
                     Tables\Columns\TextColumn::make('foil')
                         ->formatStateUsing(fn(bool $state) => $state ? 'Foil' : 'Not Foil')
                         ->badge()
@@ -76,6 +76,9 @@ class CardCloneResource extends Resource
                 ]),
             ])
             ->filters([
+                Tables\Filters\SelectFilter::make('set')
+                    ->relationship('set', 'name', fn(Builder $query) => $query->present())
+                    ->preload(),
                 Tables\Filters\SelectFilter::make('colours')
                     ->relationship('colours', 'name')
                     ->multiple(),
