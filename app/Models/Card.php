@@ -20,7 +20,7 @@ class Card extends Model
 
     public function set(): BelongsTo
     {
-        return $this->belongsTo(Set::class, 'code', 'set_code');
+        return $this->belongsTo(Set::class, 'set_code', 'code');
     }
 
     public function colours(): BelongsToMany

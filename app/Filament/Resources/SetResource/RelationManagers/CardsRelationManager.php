@@ -1,60 +1,38 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Filament\Resources\SetResource\RelationManagers;
 
-use App\Filament\Resources\CardResource\Pages;
-use App\Filament\Resources\CardResource\RelationManagers;
+use App\Enums\WantStatus;
 use App\Models\Card;
 use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Resources\Resource;
+use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
-use Nette\Utils\ImageColor;
-use App\Enums\WantStatus;
 
-class CardResource extends Resource
+class CardsRelationManager extends RelationManager
 {
-    protected static ?string $model = Card::class;
+    protected static string $relationship = 'cards';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-
-    public static function form(Form $form): Form
+    public function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('scryfall_id')
-                    ->required()
-                    ->maxLength(255),
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\Textarea::make('scryfall_data')
-                    ->maxLength(65535)
-                    ->columnSpanFull(),
-                Forms\Components\Textarea::make('oracle_text')
-                    ->maxLength(65535)
-                    ->columnSpanFull(),
-                Forms\Components\Textarea::make('type_line')
-                    ->maxLength(65535)
-                    ->columnSpanFull(),
-                Forms\Components\TextInput::make('set_name')
-                    ->maxLength(255),
-                Forms\Components\Textarea::make('image')
-                    ->maxLength(65535)
-                    ->columnSpanFull(),
             ]);
     }
 
-    public static function table(Table $table): Table
+    public function table(Table $table): Table
     {
         return $table
+            ->recordTitleAttribute('name')
             ->columns([
                 Stack::make([
                     Tables\Columns\ImageColumn::make('image')
@@ -66,7 +44,6 @@ class CardResource extends Resource
                         ->height('auto')
                         ->extraImgAttributes(['class' => 'w-full'])
                         ->alignCenter(),
-
                     TextColumn::make('quantity')
                         ->formatStateUsing(fn(int $state) => $state > 1 ? "Count: " . $state : 'Count: 1')
                         ->alignCenter(),
@@ -76,34 +53,18 @@ class CardResource extends Resource
                         ->color(fn(bool $state) => $state ? 'primary' : 'grey')
                         ->alignCenter(),
                 ]),
-            ])
-            ->filtersTriggerAction(fn($action) => $action->button()->label('Filters'))
+            ])->contentGrid(function (Table $table) {
+                return [
+                    'md' => 2,
+                    'lg' => 3,
+                    '2xl' => 4,
+                ];
+            })
             ->filters([
-                Tables\Filters\SelectFilter::make('set')
-                    ->relationship('set', 'name')
-                    ->preload(),
-                Tables\Filters\SelectFilter::make('colours')
-                    ->relationship('colours', 'name')
-                    ->preload()
-                    ->multiple(),
-                Tables\Filters\SelectFilter::make('cardTypes')
-                    ->relationship('cardTypes', 'name')
-                    ->preload()
-                    ->multiple(),
-                Tables\Filters\TernaryFilter::make('foil')
-                    ->placeholder('Any')
-                    ->trueLabel('Foil')
-                    ->falseLabel('Non-Foil'),
-                Tables\Filters\TernaryFilter::make('quantity')
-                    ->queries(
-                        true: fn(Builder $query) => $query->where('quantity', '>', 1),
-                        false: fn(Builder $query) => $query->where('quantity', 1),
-                    )
-                    ->placeholder('Any')
-                    ->trueLabel('More than 1')
-                    ->falseLabel('Only 1')
-
-            ], layout: FiltersLayout::AboveContentCollapsible)
+                //
+            ])
+            ->headerActions([
+            ])
             ->actions([
 
                 Tables\Actions\Action::make('notWant')
@@ -132,31 +93,7 @@ class CardResource extends Resource
                     ->color('danger')
                     ->action(fn(Card $record) => Auth::user()->reallyReallyWant($record)),
             ])
-            ->contentGrid(function (Table $table) {
-                return [
-                    'md' => 2,
-                    'lg' => 3,
-                    '2xl' => 4,
-                ];
-            })
-            ->paginated([
-                10, 25, 50, 100
+            ->bulkActions([
             ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
-    }
-
-    public static function getPages(): array
-    {
-        return [
-            'index' => Pages\ListCards::route('/'),
-            'create' => Pages\CreateCard::route('/create'),
-            'edit' => Pages\EditCard::route('/{record}/edit'),
-        ];
     }
 }
