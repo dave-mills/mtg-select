@@ -5,9 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\SetResource\Pages;
 use App\Filament\Resources\SetResource\RelationManagers;
 use App\Models\Set;
-use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Infolists\Components\Fieldset;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
@@ -18,7 +16,6 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class SetResource extends Resource
 {

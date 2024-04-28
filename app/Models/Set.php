@@ -19,6 +19,11 @@ class Set extends Model
         $query->whereHas('cards');
     }
 
+    public function scopeHasDraftPacks(Builder $query): void
+    {
+        $query->where('draft_pack_count', '>', 0);
+    }
+
     public function cards(): HasMany
     {
         return $this->hasMany(Card::class, 'set_code', 'code');
