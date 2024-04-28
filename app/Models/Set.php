@@ -29,4 +29,18 @@ class Set extends Model
         return $this->hasMany(Card::class, 'set_code', 'code');
     }
 
+    public function addDraftPack(): void
+    {
+        $this->update([
+            'draft_pack_count' => $this->draft_pack_count + 3,
+        ]);
+    }
+
+    public function removeDraftPack(): void
+    {
+        $this->update([
+            'draft_pack_count' => $this->draft_pack_count - 3,
+        ]);
+    }
+
 }

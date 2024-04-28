@@ -7,6 +7,7 @@ use App\Filament\Resources\SetDraftingResource\RelationManagers;
 use App\Models\Set;
 use App\Models\SetDrafting;
 use Awcodes\Shout\Components\Shout;
+use Filament\Actions\Action;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -60,6 +61,12 @@ class SetDraftingResource extends Resource
                     ->query(fn(Builder $query) => $query->hasDraftPacks()),
             ])
             ->actions([
+                Tables\Actions\Action::make('add draft pack')
+                    ->label('+ DP')
+                    ->action(fn($record) => $record->addDraftPack()),
+                Tables\Actions\Action::make('remove draft pack')
+                    ->label('- DP')
+                    ->action(fn($record) => $record->removeDraftPack()),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
